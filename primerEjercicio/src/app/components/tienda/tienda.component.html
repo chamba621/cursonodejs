@@ -1,0 +1,73 @@
+<a class="btn-activo btn btn-success" [@marcar]="status" (click)="cambiarEstado(status)">activar boton</a>
+
+
+<hr>
+<h4>animaciones con css</h4>
+<a class="btn-transiciones">Transiciones</a>
+
+<div class="clearfix"></div>
+
+<div class="caja-animada">
+	
+</div>
+
+<hr>
+<h4>Como usar jquery en angular</h4>
+<button id="btnJQ">mostrar texto</button>
+<p id="textoJQ" class="alert alert-warning">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</p>
+
+<div id="caja" style="border:1px solid black; height: 50px; width: 150px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</div>
+
+
+<simple-tiny
+  [elementId]="'my-editor-id'"
+  (onEditorKeyup)="keyupHandlerFunction($event)"
+  >
+</simple-tiny>
+
+
+<hr>
+
+Padre
+<h1>{{titulo}}</h1>
+<ul>
+	<li>test1</li>
+	<li>test2</li>
+</ul>
+<p>
+	Nombre del parque:
+	<input type="text" [(ngModel)]="nombreDelParque" (keyup)="mostrarNombre()"/>
+</p>
+<p>
+	Resultado: {{nombreDelParque}}
+</p>
+
+<div *ngIf="miParque">
+	<h4>Datos de miParque desde el hijo</h4>
+	<ol>
+		<li>{{miParque.nombre}}</li>
+		<li>{{miParque.metros}}</li>
+		<li>{{miParque.vegetacion}}</li>
+		<li>{{miParque.abierto}}</li>
+	</ol>
+</div>
+
+<parques [nombre]="'valores fijos'" [dimension]="987" (pasarDatos)="verDatosParque($event)"></parques>
+
+<hr>
+<p *ngIf="nombreDelParque">
+	Hijo
+	<parques [nombre]="nombreDelParque" [dimension]="987" (pasarDatos)="verDatosParque($event)"></parques>
+</p>
