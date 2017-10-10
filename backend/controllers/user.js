@@ -6,14 +6,15 @@ var bcrypt = require('bcrypt-nodejs');
 //modelos
 var User = require('../models/user');
 
-//servicios
+//servicio jwt
 var jwt = require('../services/jwt');
 
 //acciones
 function pruebas(request, response)
 {
 	response.status(200).send({
-		message: 'probando desde el controlador user y la acción pruebas'
+		message: 'probando desde el controlador user y la acción pruebas',
+		user: request.user
 	});
 }
 
@@ -101,7 +102,6 @@ function login(request, response)
 						//comprobar y generar el token
 						if(params.getToken)
 						{
-							//devolver token jwt
 							response.status(200).send({token: jwt.createToken(user)});
 						}
 						else
@@ -123,8 +123,38 @@ function login(request, response)
 	});
 }
 
+function updateUser(request, response)
+{
+	var userId = request.params.id;
+	var update = request.body;
+
+	if(userId != request.user.sub)
+	{
+		return response.status(500).send({message:'No tienes permiso para actualizar este usuario'});
+	}
+
+	User.findByIdAndUpdate(userId, update, {new: true}, (error, userUpdate) => {
+		if(error)
+		{
+			response.status(500).send({message:'Error al actualizar usuario'});
+		}
+		else
+		{
+			if(!userUpdate)
+			{
+				response.status(404).send({message: 'No se ha podido actualizar el usuario'});
+			}
+			else
+			{
+				response.status(200).send({user: userUpdate});
+			}
+		}
+	});
+}
+
 module.exports = {
 	pruebas,
 	saveUser,
-	login
+	login,
+	updateUser
 }

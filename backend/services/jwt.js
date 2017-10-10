@@ -2,7 +2,7 @@
 
 var jwt = require('jwt-simple');
 var moment = require('moment');
-var secretKey = "clave_secreta_prueba_angular";
+var secretKey = "TengoMuchoSuenoSonLas10y58";
 
 exports.createToken = function(user){
 	var payLoad = {
