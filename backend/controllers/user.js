@@ -2,6 +2,8 @@
 
 //modulos
 var bcrypt = require('bcrypt-nodejs');
+var fs = require('fs');
+var path = require('path');
 
 //modelos
 var User = require('../models/user');
@@ -133,28 +135,131 @@ function updateUser(request, response)
 		return response.status(500).send({message:'No tienes permiso para actualizar este usuario'});
 	}
 
-	User.findByIdAndUpdate(userId, update, {new: true}, (error, userUpdate) => {
+	User.findByIdAndUpdate(userId, update, {new: true}, (error, userUpdated) => {
 		if(error)
 		{
 			response.status(500).send({message:'Error al actualizar usuario'});
 		}
 		else
 		{
-			if(!userUpdate)
+			if(!userUpdated)
 			{
 				response.status(404).send({message: 'No se ha podido actualizar el usuario'});
 			}
 			else
 			{
-				response.status(200).send({user: userUpdate});
+				response.status(200).send({user: userUpdated});
 			}
 		}
 	});
+}
+
+function uploadImage(request, response)
+{	
+	var userId = request.params.id;
+	var fileName = 'No subido ...';
+
+	if(request.files)
+	{
+		var filePath = request.files.image.path;
+		var arrayNameFile = filePath.split('\\');
+		var fileName =arrayNameFile[2];
+		var arrayName = fileName.split("\.");
+		var extension = arrayName[1].toLowerCase();
+
+		if(extension == "png" || extension == "jpeg"  || extension == "jpg" || extension == "gif")
+		{
+			if(userId != request.user.sub)
+			{
+				return response.status(500).send({message:'No tienes permiso para actualizar este usuario'});
+			}
+
+			User.findByIdAndUpdate(userId, {image: fileName}, {new: true}, (error, userUpdated) => {
+				if(error)
+				{
+					response.status(500).send({message:'Error al actualizar usuario'});
+				}
+				else
+				{
+					if(!userUpdated)
+					{
+						response.status(404).send({message: 'No se ha podido actualizar el usuario'});
+					}
+					else
+					{
+						response.status(200).send({user: userUpdated, image: fileName});
+					}
+				}
+			});
+		}
+		else
+		{
+			fs.unlink(filePath, (error) => {
+				if(error)
+				{
+					response.status(200).send({message:"No es una extension valida y fichero no borrado"});
+				}
+				else
+				{
+					response.status(200).send({message:"No es una extension valida"});
+				}
+			
+			});
+		}
+
+		//response.status(200).send({filePath:filePath,arrayNameFile:arrayNameFile,fileName:fileName});
+	}
+	else
+	{
+		response.status(200).send({message:"No se ha enviado ningun archivo"});
+	}
+}
+
+function getImageFile(request, response)
+{
+	var imageFile = request.params.imageFile;
+	var pathFile = './uploads/users/'+imageFile;
+
+	fs.exists(pathFile, function(exists){
+		if(exists)
+		{
+			response.sendFile(path.resolve(pathFile));
+		}
+		else
+		{
+			response.status(404).send({message: "No se encontro la imagen"});
+		}
+	});
+}
+
+function getKeepers(request, response)
+{
+	User.find({role: 'ROLE_ADMIN'}).exec((error, users) => {
+		if(error)
+		{
+			response.status(500).send({message: "Error en la peticion"});
+		}
+		else
+		{
+			if(!users)
+			{
+				response.status(404).send({message: "No hay cuidadores"});
+			}
+			else
+			{
+				response.status(200).send({users});
+			}
+		}
+	});
+
 }
 
 module.exports = {
 	pruebas,
 	saveUser,
 	login,
-	updateUser
+	updateUser,
+	uploadImage,
+	getImageFile,
+	getKeepers
 }
