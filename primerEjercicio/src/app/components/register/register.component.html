@@ -1,0 +1,40 @@
+<div class="col-lg-6">
+	<h1>{{title}}</h1>
+
+	<div class="alert alert-{{status}}" *ngIf="message">
+		{{message}}
+	</div>
+
+	<form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" class="col-lg-10">
+		<p>
+			<label>Nombre</label>
+			<input type="text" name="name" class="form-control" required #name="ngModel" [(ngModel)]="user.name" />
+			<span *ngIf="!name.valid && name.touched">
+				El Nombre es requerido
+			</span>
+		</p>
+		<p>
+			<label>Apellido</label>
+			<input type="text" name="surname" class="form-control" required #surname="ngModel" [(ngModel)]="user.surname" />
+			<span *ngIf="!surname.valid && surname.touched">
+				El Apellido es requerido
+			</span>
+		</p>
+		<p>
+			<label>Email</label>
+			<input type="email" name="email" class="form-control" required #email="ngModel" [(ngModel)]="user.email" />
+			<span *ngIf="!email.valid && email.touched">
+				El Email es requerido
+			</span>
+		</p>
+		<p>
+			<label>Contraseña</label>
+			<input type="password" name="password" class="form-control" required #password="ngModel" [(ngModel)]="user.password" />
+			<span *ngIf="!password.valid && password.touched">
+				La Contraseña es requerida
+			</span>
+		</p>
+		
+		<input type="submit" value="{{title}}" class="btn btn-success" [disabled]="!registerForm.form.valid" />	
+	</form>
+</div>
