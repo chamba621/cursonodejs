@@ -108,6 +108,7 @@ function login(request, response)
 						}
 						else
 						{
+							user.password = "";
 							response.status(200).send({user});
 						}
 					}

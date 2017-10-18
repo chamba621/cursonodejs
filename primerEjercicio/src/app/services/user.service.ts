@@ -22,4 +22,17 @@ export class UserService{
 		return this._http.post(this.url+'register', params, {headers: headers})
 				.map(res => res.json());
 	}
+
+	signUp(userToLogin, getToken = null)
+	{
+		if(getToken != null)
+		{
+			userToLogin.getToken = getToken;
+		}
+
+		let params = JSON.stringify(userToLogin);
+		let headers = new Headers({'Content-Type':'application/json'});
+
+		return this._http.post(this.url+'login', params, {headers: headers}).map(res => res.json());
+	}
 }
